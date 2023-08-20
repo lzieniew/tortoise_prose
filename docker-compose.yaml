@@ -2,14 +2,9 @@ version: '3'
 
 services:
   tts-backend:
-    image: your_tts_image
+    image: ghcr.io/lzieniew/tortoise-tts-api:latest
     ports:
       - "5000:5000"
-  
-  web-frontend:
-    image: your_web_frontend_image
-    ports:
-      - "8080:8080"
   
   caddy:
     image: caddy:latest
