@@ -2,7 +2,8 @@ version: '3'
 
 services:
   tts-backend:
-    image: ghcr.io/lzieniew/tortoise-tts-api:latest
+    #image: my-tts-api # development image 
+    image: ghcr.io/lzieniew/tortoise-tts-api:main # deployment image
     ports:
       - "5000:5000"
   
@@ -13,3 +14,4 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./static:/static

@@ -1,0 +1,15 @@
+http://:80 {
+
+    # For paths starting with /api/, reverse proxy to port 5000
+    route /api/* {
+        uri strip_prefix /api
+        reverse_proxy tts-backend:5000
+    }
+
+    # For the root path, serve a static file or a simple message
+    route / {
+        root * /static
+        file_server
+    }
+
+}
