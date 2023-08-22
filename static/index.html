@@ -1,34 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>TTS API Example</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work in Progress</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 50px;
+        }
+        .progress-text {
+            font-size: 24px;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-
-    <h1>Text to Speech API Test</h1>
-    <button id="fetchButton">Fetch Text</button>
-    <p>Returned Text: <span id="displayText"></span></p>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const fetchButton = document.getElementById("fetchButton");
-            const displayText = document.getElementById("displayText");
-
-            fetchButton.addEventListener("click", function() {
-                // Using Fetch API to get data from the API
-                fetch('http://0.0.0.0/api/tts/')
-                .then(response => response.json()) // Parsing the JSON data
-                .then(data => {
-                    // Display the text
-                    displayText.innerText = data.text;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    displayText.innerText = "An error occurred.";
-                });
-            });
-        });
-    </script>
-
+    <div class="progress-text">Work in progress</div>
+    <a href="/test/">Go to Test Page</a>
 </body>
 </html>

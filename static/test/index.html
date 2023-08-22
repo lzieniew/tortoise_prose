@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TTS API Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 800px;
+        }
+        h1 {
+            color: #007BFF;
+            text-align: center;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        label, textarea, button {
+            display: block;
+            margin: 10px auto;
+        }
+        textarea {
+            padding: 10px;
+            font-size: 18px; /* Increased font size */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%; /* Increased width */
+            height: 80px;
+        }
+        button {
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #218838;
+        }
+        audio {
+            width: 100%;
+            margin-top: 20px;
+        }
+        #timer {
+            color: #e44d26;
+            font-weight: bold;
+            text-align: center;
+        }
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 60px;
+          height: 34px;
+          margin: 10px auto;
+        }
+
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          transition: 0.4s;
+          border-radius: 34px;
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          transition: 0.4s;
+          border-radius: 50%;
+        }
+
+        input:checked + .slider {
+          background-color: #28a745;
+        }
+
+        input:checked + .slider:before {
+          transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Text to Speech API Test</h1>
+    <form id="ttsForm">
+        <label for="sentence">Enter Text:</label>
+        <input type="text" id="sentence" name="sentence" required style="width: 100%; padding: 10px; font-size: 18px; border: 1px solid #ccc; border-radius: 5px;">        <input type="hidden" id="engine" name="engine" value="tortoise">
+        <label class="switch">
+          <input type="checkbox" id="autoplayToggle" checked>
+          <span class="slider"></span>
+        </label>
+        <span class="toggle-label">Autostart</span>
+
+        <button type="submit">Generate Speech</button>
+    </form>
+    <p id="timer">Time taken: <span>0</span> seconds</p>
+    <audio id="audioPlayer" controls autoplay style="display: none;"></audio>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ttsForm = document.getElementById("ttsForm");
+            const audioPlayer = document.getElementById("audioPlayer");
+            const timerElement = document.getElementById("timer").querySelector("span");
+            let timer;
+
+            ttsForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+                const formData = new FormData(ttsForm);
+                const data = Object.fromEntries(formData);
+
+                // Start the timer
+                let seconds = 0;
+                timerElement.innerText = seconds;
+                let milliseconds = 0;
+                timer = setInterval(function() {
+                    milliseconds += 10;
+                    const displaySeconds = Math.floor(milliseconds / 1000);
+                    const displayMilliseconds = milliseconds % 1000;
+                    timerElement.innerText = displaySeconds + "." + displayMilliseconds;
+                }, 10);
+                // Using Fetch API to post data to the API
+                fetch('http://0.0.0.0/api/tts/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.blob()) // Parsing the blob data
+                .then(blob => {
+                    // Stop the timer
+                    clearInterval(timer);
+
+                    // Create a URL for the blob
+                    const url = window.URL.createObjectURL(blob);
+                    const autoplayToggle = document.getElementById("autoplayToggle");
+                    audioPlayer.src = url;
+                    audioPlayer.autoplay = autoplayToggle.checked; // Set autoplay based on the checkbox state
+                    audioPlayer.style.display = "block"; // Show the audio player
+                    audioPlayer.style.display = "block"; // Show the audio player
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    clearInterval(timer); // Stop the timer in case of an error
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
