@@ -130,18 +130,17 @@
                 const formData = new FormData(ttsForm);
                 const data = Object.fromEntries(formData);
 
-                // Start the timer
-                let seconds = 0;
-                timerElement.innerText = seconds;
-                let milliseconds = 0;
+                // Record the start time
+                const startTime = Date.now();
+
+                // Start the display timer
                 timer = setInterval(function() {
-                    milliseconds += 10;
-                    const displaySeconds = Math.floor(milliseconds / 1000);
-                    const displayMilliseconds = milliseconds % 1000;
-                    timerElement.innerText = displaySeconds + "." + displayMilliseconds;
+                    const elapsedTime = (Date.now() - startTime) / 1000;
+                    timerElement.innerText = elapsedTime.toFixed(2); // Display the elapsed time in seconds
                 }, 10);
+
                 // Using Fetch API to post data to the API
-                fetch('http://0.0.0.0/api/tts/', {
+                fetch('/api/tts/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -150,7 +149,7 @@
                 })
                 .then(response => response.blob()) // Parsing the blob data
                 .then(blob => {
-                    // Stop the timer
+                    // Stop the display timer
                     clearInterval(timer);
 
                     // Create a URL for the blob
@@ -158,7 +157,6 @@
                     const autoplayToggle = document.getElementById("autoplayToggle");
                     audioPlayer.src = url;
                     audioPlayer.autoplay = autoplayToggle.checked; // Set autoplay based on the checkbox state
-                    audioPlayer.style.display = "block"; // Show the audio player
                     audioPlayer.style.display = "block"; // Show the audio player
                 })
                 .catch(error => {
