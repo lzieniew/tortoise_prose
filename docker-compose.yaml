@@ -1,22 +1,30 @@
-version: '3'
+version: '3.8'
 
 services:
+#  tts-backend:
+#    #image: my-tts-api # development image
+#    image: ghcr.io/lzieniew/tortoise-tts-api:main # deployment image
+#    ports:
+#      - "5000:5000"
+#    volumes:
+#        - ./results:/src/results
+#        - ./cache/:/root/.cache/
+#    deploy:
+#        resources:
+#            reservations:
+#                devices:
+#                  - driver: nvidia
+#                    device_ids: ['0']
+#                    capabilities: [gpu]
+
+# for testing purposes
   tts-backend:
-    #image: my-tts-api # development image
-    image: ghcr.io/lzieniew/tortoise-tts-api:main # deployment image
+    image: ghcr.io/lzieniew/piper-tts-api:main
     ports:
       - "5000:5000"
     volumes:
-        - ./results:/src/results
-        - ./cache/:/root/.cache/
-    deploy:
-        resources:
-            reservations:
-                devices:
-                  - driver: nvidia
-                    device_ids: ['0']
-                    capabilities: [gpu]
-  
+      - ./results:/usr/src/app/results
+
   caddy:
     image: caddy:latest
     ports:
