@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Processing Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-yellow-100">
+    <div class="container mx-auto p-4">
+        <div class="bg-white shadow-md rounded p-4">
+            <h1 class="text-2xl font-bold mb-4 text-yellow-600">Text Processing Application</h1>
+            <div class="flex border-b">
+                <button onclick="showTabWrapper(0)" id="tabButton0" class="py-2 px-4">Import Text</button>
+                <button onclick="showTabWrapper(1)" id="tabButton1" class="py-2 px-4 text-gray-400">Clean Text</button>
+                <button onclick="showTabWrapper(2)" id="tabButton2" class="py-2 px-4 text-gray-400">Analyze Text</button>
+            </div>
+            <div id="tab0" class="tab-content">
+                <!-- Import Text Content -->
+                <button onclick="showTabWrapper(1)" class="bg-yellow-500 text-white py-2 px-4 mt-4">Next</button>
+            </div>
+            <div id="tab1" class="tab-content hidden">
+                <!-- Clean Text Content -->
+                <button onclick="showTabWrapper(2)" class="bg-yellow-500 text-white py-2 px-4 mt-4">Next</button>
+            </div>
+            <div id="tab2" class="tab-content hidden">
+                <!-- Analyze Text Content -->
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var pyodide = null;
+
+        async function loadPyodideAndInitialize() {
+            pyodide = await loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.18.1/full/' });
+            initializePyodide();
+        }
+
+        function initializePyodide() {
+            pyodide.runPython(`
+                from js import document
+
+                def showTab(tabIndex):
+                    tabs = document.querySelectorAll('.tab-content')
+                    buttons = document.querySelectorAll('.flex button')
+                    for index, tab in enumerate(tabs):
+                        if index == tabIndex:
+                            tab.classList.remove('hidden')
+                        else:
+                            tab.classList.add('hidden')
+
+                    for index, button in enumerate(buttons):
+                        if index < tabIndex:
+                            button.classList.add('text-yellow-500')
+                            button.classList.remove('text-blue-500', 'text-gray-400')
+                        elif index == tabIndex:
+                            button.classList.add('text-yellow-500')
+                            button.classList.remove('text-blue-500', 'text-gray-400')
+                        elif index == tabIndex + 1:
+                            button.classList.add('text-blue-500')
+                            button.classList.remove('text-yellow-500', 'text-gray-400')
+                        else:
+                            button.classList.add('text-gray-400')
+                            button.classList.remove('text-yellow-500', 'text-blue-500')
+
+                # Initialize the first tab
+                showTab(0)
+            `);
+        }
+
+        function showTabWrapper(tabIndex) {
+            pyodide.runPython('showTab(' + tabIndex + ')');
+        }
+
+        window.addEventListener('load', loadPyodideAndInitialize);
+    </script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pyodide.js"></script>
+</body>
+</html>
